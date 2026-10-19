@@ -1,0 +1,34 @@
+#cloud-config
+# cloud-init-server.yaml: Part I, no Docker packages yet
+# Password hashes are redacted in this public copy.
+
+hostname: ${hostname}
+fqdn: ${hostname}.local
+
+users:
+  - default
+  - name: ${student_name}
+    gecos: "Student User"
+    sudo: "ALL=(ALL) NOPASSWD:ALL"
+    groups: users, admin
+    shell: /bin/bash
+    lock_passwd: false
+    hashed_passwd: "$6$<REDACTED>"
+    ssh_authorized_keys:
+      - ${ssh_public_key}
+
+ssh_pwauth: true
+
+package_update: true
+packages:
+  - openssh-server
+  - curl
+  - wget
+  - vim
+  - git
+  - net-tools
+
+runcmd:
+  - echo 'root:$6$<REDACTED>' | chpasswd -e
+  - systemctl restart ssh
+  - echo "${hostname} - SYS-350 Enterprise VM" > /etc/motd
