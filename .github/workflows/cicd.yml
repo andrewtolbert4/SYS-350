@@ -24,3 +24,23 @@ jobs:
 
       - name: Validate configuration
         run: terraform validate -no-color
+
+      - name: Start floci
+        run: |
+          docker run -d --name floci -p 4566:4566 \
+            -v /var/run/docker.sock:/var/run/docker.sock \
+            -e FLOCI_SERVICES_UI_ENABLED=false \
+            floci/floci:latest
+          echo "Waiting for floci..."
+          for i in $(seq 1 30); do
+            if curl -sf http://localhost:4566/_floci/health > /dev/null; then
+              echo "floci is healthy"
+              exit 0
+            fi
+            sleep 2
+          done
+          echo "floci did not become healthy in time" >&2
+          exit 1
+
+      - name: Plan
+        run: terraform plan -no-color -input=false -out=tfplan
