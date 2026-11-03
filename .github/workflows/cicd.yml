@@ -55,7 +55,7 @@ jobs:
       - name: Verify S3 website
         if: github.event_name == 'push'
         run: |
-          curl -sf "http://localhost:4566/${TF_VAR_student_name}-course-website/index.html" | grep "Hello from S3"
+          curl -sf "http://localhost:4566/student-course-website/index.html" | grep "Hello from S3"
 
       - name: Verify DynamoDB and Lambda
         if: github.event_name == 'push'
