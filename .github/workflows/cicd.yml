@@ -67,3 +67,7 @@ jobs:
         run: |
           aws dynamodb list-tables --endpoint-url http://localhost:4566
           aws lambda list-functions --endpoint-url http://localhost:4566
+
+      - name: Destroy
+        if: github.event_name == 'push'
+        run: terraform destroy -input=false -auto-approve
