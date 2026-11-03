@@ -44,3 +44,21 @@ jobs:
 
       - name: Plan
         run: terraform plan -no-color -input=false -out=tfplan
+
+      - name: Apply
+        if: github.event_name == 'push'
+        run: terraform apply -input=false -auto-approve tfplan
+
+      - name: Build Lambda package
+        run: cd lambda && zip ../lambda.zip lambda_function.py
+
+      - name: Verify S3 website
+        if: github.event_name == 'push'
+        run: |
+          curl -sf "http://localhost:4566/${TF_VAR_student_name}-course-website/index.html" | grep "Hello from S3"
+
+      - name: Verify DynamoDB and Lambda
+        if: github.event_name == 'push'
+        run: |
+          aws dynamodb list-tables --endpoint-url http://localhost:4566
+          aws lambda list-functions --endpoint-url http://localhost:4566
