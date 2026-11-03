@@ -9,6 +9,11 @@ on:
 jobs:
   terraform:
     runs-on: ubuntu-latest
+    env:
+      AWS_ACCESS_KEY_ID: test
+      AWS_SECRET_ACCESS_KEY: test
+      AWS_DEFAULT_REGION: us-east-1
+      TF_VAR_student_name: student
     steps:
       - name: Check out repository
         uses: actions/checkout@v7
@@ -55,7 +60,7 @@ jobs:
       - name: Verify S3 website
         if: github.event_name == 'push'
         run: |
-          curl -sf "http://localhost:4566/student-course-website/index.html" | grep "Hello from S3"
+          curl -sf "http://localhost:4566/${TF_VAR_student_name}-course-website/index.html" | grep "Hello from S3"
 
       - name: Verify DynamoDB and Lambda
         if: github.event_name == 'push'
