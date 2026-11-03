@@ -1,5 +1,4 @@
 .terraform/
 terraform.tfstate*
-lab-key
-out.json
-main.tf.bak
+lambda.zip
+*.tfvars
