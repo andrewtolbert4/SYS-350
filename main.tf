@@ -33,7 +33,7 @@ variable "student_name" {
   default     = "student"
 
   validation {
-    condition     = can(regex("^[a-z]{2,10}$", var.student_nam))
+    condition     = can(regex("^[a-z]{2,10}$", var.student_name))
     error_message = "Student name must be 2-10 lowercase letters."
   }
 }
